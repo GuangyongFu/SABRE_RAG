@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask BILL2 A SABRE Question</title>
+</head>
+<body>
+    <h1>Ask Bill2 a SABRE question</h1>
+    <p>Fine-tuned chatgpt-4o mini model with SABRE South papers from INSPIREHEP (https://inspirehep.net/literature?sort=mostrecent&size=25&page=1&q=sabre%20south&ui-citation-summary=true).</p>
+    <p><em>The answer is provided for reference only, as it could be incorrect. It is recommended to check the original document for accuracy.</em></p>
+    <form id="questionForm">
+        <label for="question">Your Question:</label>
+        <input type="text" id="question" name="question" size="100" required>
+        <button type="submit">Submit</button>
+    </form>
+    <div id="response"></div>
+    <script>
+        // Handle form submission with JavaScript
+        document.getElementById("questionForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const question = document.getElementById("question").value;
+            const responseDiv = document.getElementById("response");
+            try {
+                const response = await fetch("/ask", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ question }),
+                });
+                const data = await response.json();
+                const formattedAnswer = data.answer.replace(/\n/g, "<br>");
+                responseDiv.innerHTML = `<p>Answer: ${formattedAnswer || "No answer provided."}</p>`;
+            } catch (err) {
+                responseDiv.innerHTML = `<p>Error: ${err.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
